@@ -19,7 +19,7 @@ copy and paste the IAM policy from the challenge here
 Detailed steps to the flag
 
 ## Reflection
-What was your approach?
-What was the biggest challenge?
-How did you overcome the challenges?
-What led to the break through?
+* What was your approach?
+* What was the biggest challenge?
+* How did you overcome the challenges?
+* What led to the break through?
