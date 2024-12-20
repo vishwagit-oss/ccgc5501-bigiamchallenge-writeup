@@ -1,8 +1,1 @@
-# Challenge 1
-
-## Challenge Statement
-
-## IAM Policy
-
-## Solution
-
+# copy the contents of sample.md to start
