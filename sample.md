@@ -7,7 +7,7 @@ The challenge statement that you are working on
 ```json
 copy and paste the IAM policy from the challenge here
 ```
-### write a short reflection about the IAM policy here
+### write a short analysis about the IAM policy here
 ```
 * What do I have access to?
 * What don't I have access to?
