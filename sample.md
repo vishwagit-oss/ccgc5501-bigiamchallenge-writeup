@@ -23,3 +23,4 @@ Detailed steps to the flag
 * What was the biggest challenge?
 * How did you overcome the challenges?
 * What led to the break through?
+* On the blue side, how can the learning be used to properly defend the important assets? 
