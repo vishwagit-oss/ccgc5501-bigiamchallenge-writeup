@@ -32,5 +32,3 @@ In response to the fifth command, I got a link to the HTML page.
 Conclusion
 This challenge demonstrates the process of obtaining temporary AWS credentials from Amazon Cognito and interacting with an SQS queue using the AWS CLI. The temporary credentials allow for sending and receiving messages from the queue as per the IAM policy.
 
-
-Now you can add this directly to your GitHub repository, and it will reflect exactly how you've 
