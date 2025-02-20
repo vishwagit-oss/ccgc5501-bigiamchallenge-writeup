@@ -1,39 +1,48 @@
+# Reflection on Setting Up a Personal AWS Environment
 
-Reflection on Setting Up a Personal AWS Environment
-As part of this exercise, I deployed and configured my own AWS environment to host CloudFoxable, a Capture the Flag (CTF) challenge designed to explore AWS security concepts. This reflection documents the steps taken, security measures implemented, and key lessons learned.
+As part of this exercise, I deployed and configured my own AWS environment to host **CloudFoxable**, a Capture the Flag (CTF) challenge designed to explore AWS security concepts. This reflection documents the steps taken, security measures implemented, and key lessons learned.
 
-Step-by-Step Reflection
-<span style="font-size:22px; font-weight:bold;">Step 1: Creating a Dedicated AWS Account</span>
-What I Did:
-I created a separate AWS account specifically for this CTF challenge instead of using my personal or existing AWS account.
+---
 
-Why I Did It:
-Isolation of resources – Prevents interference with other AWS projects.
-Minimized security risks – If any misconfigurations occur, they won’t affect production or personal workloads.
-Cost control – Allows me to track and delete all CTF-related resources when finished.
-Key Reflection:
-Using a dedicated AWS account is a best practice for security testing. It ensures that any misconfigurations, privilege escalations, or security flaws discovered in the exercise do not impact sensitive or critical environments.
+## Step-by-Step Reflection
 
-<span style="font-size:22px; font-weight:bold;">Step 2: Creating an Admin User Instead of Using the Root User</span>
-What I Did:
-After setting up the AWS account, I created an IAM user with administrative privileges instead of using the root user.
+### Step 1: Creating a Dedicated AWS Account
 
-Why I Did It:
-Security best practice – The root user has unrestricted access and should not be used for daily operations.
-Access control – IAM users can be assigned specific roles and permissions.
-Auditability – AWS logs IAM user activity in CloudTrail, allowing for better tracking of actions.
-Key Reflection:
-Even though I had access to the root user, using an admin IAM user instead was a critical security step. It enforces better access control, reduces exposure to risks, and ensures actions are logged for auditing purposes.
+#### What I Did:
+I created a **separate AWS account** specifically for this CTF challenge instead of using my personal or existing AWS account.
 
-<span style="font-size:22px; font-weight:bold;">Step 3: Configuring the AWS CLI Securely</span>
-What I Did:
-I installed the AWS CLI and configured it using the newly created admin IAM user.
+#### Why I Did It:
+- **Isolation of resources** – Prevents interference with other AWS projects.
+- **Minimized security risks** – If any misconfigurations occur, they won’t affect production or personal workloads.
+- **Cost control** – Allows me to track and delete all CTF-related resources when finished.
 
-Commands used:
+#### Key Reflection:
+Using a **dedicated AWS account** is a **best practice for security testing**. It ensures that any misconfigurations, privilege escalations, or security flaws discovered in the exercise do not impact sensitive or critical environments.
 
-sh
-Copy
-Edit
+---
+
+### Step 2: Creating an Admin User Instead of Using the Root User
+
+#### What I Did:
+After setting up the AWS account, I created an **IAM user with administrative privileges** instead of using the **root user**.
+
+#### Why I Did It:
+- **Security best practice** – The root user has **unrestricted access** and should not be used for daily operations.
+- **Access control** – IAM users can be assigned specific **roles and permissions**.
+- **Auditability** – AWS logs IAM user activity in **CloudTrail**, allowing for better tracking of actions.
+
+#### Key Reflection:
+Even though I had access to the root user, **using an admin IAM user instead was a critical security step**. It enforces **better access control, reduces exposure to risks, and ensures actions are logged for auditing purposes**.
+
+---
+
+### Step 3: Configuring the AWS CLI Securely
+
+#### What I Did:
+I installed the **AWS CLI** and configured it using the newly created admin IAM user.
+
+#### Commands used:
+```sh
 aws configure
 aws sts get-caller-identity
 Why I Did It:
@@ -43,12 +52,11 @@ Avoiding manual errors – The CLI ensures consistent and repeatable execution o
 Key Reflection:
 Setting up the AWS CLI correctly was essential for managing my environment securely and efficiently. Manually interacting with AWS via the web console can lead to misconfigurations, whereas CLI automation ensures consistency.
 
-<span style="font-size:22px; font-weight:bold;">Step 4: Deploying CloudFoxable with Terraform</span>
+Step 4: Deploying CloudFoxable with Terraform
 What I Did:
 I used Terraform to deploy CloudFoxable’s AWS infrastructure.
 
 Commands used:
-
 sh
 Copy
 Edit
@@ -64,7 +72,7 @@ Easy cleanup – terraform destroy removes all resources when finished.
 Key Reflection:
 Terraform made deploying AWS resources easier, faster, and more secure compared to manual configurations. Automating infrastructure setup minimizes misconfigurations and enforces security best practices.
 
-<span style="font-size:22px; font-weight:bold;">Step 5: Configuring IAM Policies and Least Privilege Access</span>
+Step 5: Configuring IAM Policies and Least Privilege Access
 What I Did:
 Assigned only the necessary permissions to IAM users and roles instead of using overly permissive policies.
 Implemented least privilege access to ensure that users only had the permissions they needed.
@@ -75,18 +83,16 @@ Better compliance with AWS security standards – AWS recommends applying the pr
 Key Reflection:
 IAM security is one of the most critical aspects of AWS security. If IAM roles and permissions are not properly configured, it can lead to serious vulnerabilities, including privilege escalation and data exposure.
 
-<span style="font-size:22px; font-weight:bold;">Step 6: Finding the Flag and Understanding the CTF Structure</span>
+Step 6: Finding the Flag and Understanding the CTF Structure
 What I Did:
 I analyzed the Terraform output after deployment to locate the first challenge flag.
 
 Flag format:
-
 cpp
 Copy
 Edit
 FLAG{challengeName::CamelCaseText}
 Example:
-
 Copy
 Edit
 FLAG{congrats_you_are_now_a_terraform_expert_happy_hunting}
@@ -96,12 +102,11 @@ Understanding AWS privilege escalation paths – The CTF challenges walk through
 Key Reflection:
 The CloudFoxable CTF structure is designed to simulate realistic AWS security risks. By participating in these challenges, I learned how to identify misconfigurations and privilege escalation techniques in AWS.
 
-<span style="font-size:22px; font-weight:bold;">Step 7: Cleaning Up the Environment</span>
+Step 7: Cleaning Up the Environment
 What I Did:
 After completing the challenge, I destroyed all AWS resources to avoid unnecessary costs.
 
 Command used:
-
 sh
 Copy
 Edit
