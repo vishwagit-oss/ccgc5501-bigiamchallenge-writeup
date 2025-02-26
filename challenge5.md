@@ -14,10 +14,7 @@ Following AWS security best practices, I avoided using the root account for depl
 Created an IAM user with AdministratorAccess to handle Terraform provisioning.
 Configured AWS CLI with this IAM user’s credentials.
 Verified access using:
-
-bash
-Copy
-Edit
+bash copy edit
 aws sts get-caller-identity
 This step confirmed that Terraform deployments would be executed under a controlled user context.
 Deploying Infrastructure as Code (IaC) with Terraform
