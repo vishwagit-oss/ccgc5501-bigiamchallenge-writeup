@@ -14,6 +14,7 @@ Following AWS security best practices, I avoided using the root account for depl
 Created an IAM user with AdministratorAccess to handle Terraform provisioning.
 Configured AWS CLI with this IAM user’s credentials.
 Verified access using:
+
 bash
 Copy
 Edit
@@ -24,11 +25,13 @@ Instead of manually provisioning resources, I used Terraform to:
 
 Deploy IAM roles, EC2 instances, and S3 buckets.
 Automate the environment setup while keeping an audit trail of changes.
+
 Ensure repeatability and easy clean-up with:
 bash
 Copy
 Edit
 terraform destroy
+
 This approach reinforced the power of Infrastructure as Code (IaC) in AWS security testing.
 Challenges and Solutions
 Understanding AWS Enumeration Techniques
@@ -41,23 +44,29 @@ Extracting Credentials from Terraform Output
 Terraform’s output contained credentials for a low-privilege user (ctf-starting-user). However, the challenge required configuring AWS CLI for this user to proceed.
 
 I extracted the credentials and configured AWS CLI using:
+
 bash
 Copy
 Edit
 aws configure --profile ctf-starting-user
+
 This allowed me to interact with AWS as the challenge user and access misconfigured resources.
 Identifying the First Flag
 The Terraform output contained a flag in the format:
 
-cpp
+bash
 Copy
 Edit
 FLAG{challengeName::CamelCaseText}
+
 Lesson learned: Always analyze deployment outputs carefully, as sensitive information may be exposed.
 The extracted flag was:
+
+bash 
 Copy
 Edit
 FLAG{congrats_you_are_now_a_terraform_expert_happy_hunting}
+
 ### Key Takeaways and Lessons Learned
 1. Importance of IAM Security
 Misconfigured IAM roles and overly permissive policies can expose AWS environments to privilege escalation risks.
