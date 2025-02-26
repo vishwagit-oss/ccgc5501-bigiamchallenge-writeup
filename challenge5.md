@@ -24,9 +24,7 @@ Deploy IAM roles, EC2 instances, and S3 buckets.
 Automate the environment setup while keeping an audit trail of changes.
 
 Ensure repeatability and easy clean-up with:
-bash
-Copy
-Edit
+
 terraform destroy
 
 This approach reinforced the power of Infrastructure as Code (IaC) in AWS security testing.
@@ -42,26 +40,19 @@ Terraform’s output contained credentials for a low-privilege user (ctf-startin
 
 I extracted the credentials and configured AWS CLI using:
 
-bash
-Copy
-Edit
 aws configure --profile ctf-starting-user
 
 This allowed me to interact with AWS as the challenge user and access misconfigured resources.
 Identifying the First Flag
 The Terraform output contained a flag in the format:
 
-bash
-Copy
-Edit
+
 FLAG{challengeName::CamelCaseText}
 
 Lesson learned: Always analyze deployment outputs carefully, as sensitive information may be exposed.
 The extracted flag was:
 
-bash 
-Copy
-Edit
+
 FLAG{congrats_you_are_now_a_terraform_expert_happy_hunting}
 
 ### Key Takeaways and Lessons Learned
