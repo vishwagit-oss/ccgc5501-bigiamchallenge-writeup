@@ -4,11 +4,7 @@
 
 The **Bastion 100** challenge is part of the "Assumed Breach: Application Compromise/Network Access" category. This challenge focuses on setting up and leveraging a Bastion host, which is a critical component for securely accessing internal network resources, such as EC2 instances in this case. The challenge involves using AWS services like EC2 and IAM, and specifically focuses on utilizing AWS Systems Manager (SSM) for accessing an EC2 instance.
 
-### Key Information:
-- **Author:** Seth Art (@sethsec)
-- **Default State:** Disabled
-- **Estimated Cost:** $3.88/month (if deployed)
-- **Starting Point:** arn:aws:iam::ACCOUNT_ID:role/ctf-starting-user
+
 
 ## CloudFoxable Setup
 
@@ -20,9 +16,7 @@ To get started with the challenge, I had to configure the environment correctly.
    bastion_enabled = true
 After this, I applied the Terraform changes using the command:
 
-bash
-Copy
-Edit
+
 terraform apply
 This command deployed the necessary infrastructure for the challenge, including the Bastion host that I would use to access internal resources.
 
@@ -30,9 +24,6 @@ Challenge Steps
 1. Identify the EC2 Instance
 Once the Bastion host was set up, I needed to find the EC2 instance that I would be working with. The easiest way to do this was to use the CloudFox tool. I ran the following command to list all the instances and their details:
 
-bash
-Copy
-Edit
 cloudfox aws -p cloudfoxable instances -v2
 This command displayed all the EC2 instances in the setup, and from the output, I could identify the instance I needed to target.
 
@@ -48,9 +39,7 @@ With the plugin installed, I needed to find the correct command to connect to th
 
 For example, the command might look something like this:
 
-bash
-Copy
-Edit
+
 aws ssm start-session --target <instance_id>
 I ran this command and successfully connected to the EC2 instance using SSM.
 
@@ -59,9 +48,6 @@ Once I had access to the EC2 instance, I explored its environment to gather info
 
 To identify the permissions of the EC2 instance, I used the CloudFox tool again, with the following command:
 
-bash
-Copy
-Edit
 cloudfox aws -p cloudfoxable permissions
 This command helped me list the IAM permissions granted to the instance role. From there, I could explore further to see if there were any elevated permissions or accessible resources that might lead to the flag.
 
@@ -70,9 +56,7 @@ Through the exploration of the EC2 instance and understanding the permissions, I
 
 The flag I found was:
 
-ruby
-Copy
-Edit
+
 {FLAG:bastion::ifYouHaveAccessToAnEC2YouHaveAccessToItsIamPermissions}
 This flag confirmed the key lesson of the challenge — once you have access to an EC2 instance, you also have access to its IAM permissions, which could potentially open the door to further resources.
 
@@ -83,15 +67,10 @@ I navigated back to the cloudfoxable/aws/terraform.tfvars file.
 
 I set the bastion_enabled flag to false:
 
-hcl
-Copy
-Edit
 bastion_enabled = false
 I ran the terraform apply command again to ensure the Bastion host was properly disabled:
 
-bash
-Copy
-Edit
+
 terraform apply
 Unlock Hint for 0 Points
 If you need help understanding what IAM permissions are accessible, you can use the following CloudFox commands:
