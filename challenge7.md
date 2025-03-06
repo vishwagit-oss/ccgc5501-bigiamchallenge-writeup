@@ -72,7 +72,7 @@ I ran the terraform apply command again to ensure the Bastion host was properly 
 
 
 terraform apply
-Unlock Hint for 0 Points
+
 If you need help understanding what IAM permissions are accessible, you can use the following CloudFox commands:
 
 cloudfox aws -p cloudfoxable permissions
