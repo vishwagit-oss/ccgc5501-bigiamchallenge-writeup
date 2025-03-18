@@ -3,19 +3,19 @@
 ---
 
 ## Challenge Statement
-The goal of this challenge is to retrieve a **flag** stored as an AWS **SSM Parameter**.  
+The goal of this challenge is to retrieve a flag stored as an AWS **SSM Parameter**.
 
-We start with an IAM user that has the following policies:  
+We start with an IAM user that has the following policies:
 
-- **SecurityAudit** (AWS Managed)  
-- **CloudFox** (Customer Managed)  
-- **its-a-secret** (Customer Managed)  
+- **SecurityAudit** (AWS Managed)
+- **CloudFox** (Customer Managed)
+- **its-a-secret** (Customer Managed)
 
 Using **CloudFox**, we need to discover the secret and extract the flag.
 
 ---
 
-## IAM Policy  
+## IAM Policy
 
 ### IAM Policy: `its-a-secret`
 ```json
@@ -53,14 +53,11 @@ Step 1: Confirm AWS Identity
 Verify that the correct profile is in use:
 
 powershell
-Copy
-Edit
+\```json
 aws --profile ctf-starting-user sts get-caller-identity
 Output:
 
-json
-Copy
-Edit
+```json
 {
     "UserId": "AIDAYQNJSWJVMPCMN3YHS",
     "Account": "585008067178",
@@ -70,27 +67,21 @@ Step 2: Run CloudFox to Enumerate Secrets
 Use CloudFox to list accessible secrets:
 
 powershell
-Copy
-Edit
+```json
 cloudfox aws -p ctf-starting-user secrets -v2
 Output (Relevant Part):
 
-bash
-Copy
-Edit
+```json
 │ SSM            │ ca-central-1 │ /cloudfoxable/flag/its-a-secret       │                                  │
 Step 3: Retrieve the Secret
 Use AWS CLI to fetch the flag:
 
 powershell
-Copy
-Edit
+```json
 aws --profile ctf-starting-user ssm get-parameter --name "/cloudfoxable/flag/its-a-secret" --with-decryption
 Output:
 
-json
-Copy
-Edit
+```json
 {
     "Parameter": {
         "Name": "/cloudfoxable/flag/its-a-secret",
@@ -105,25 +96,28 @@ Edit
 Step 4: Submit the Flag
 Copy and submit the flag:
 
-cpp
-Copy
-Edit
+```json
 FLAG{ItsASecret::IsASecretASecretIfTooManyPeopleHaveAccessToIt?}
 Reflection
-What was my approach?
+#What was my approach?#
+
 First, I confirmed my AWS identity.
 Then, I used CloudFox to scan for accessible secrets.
 Finally, I used AWS CLI to retrieve the flag from SSM Parameter Store.
-What was the biggest challenge?
+
+#What was the biggest challenge?#
 Initially, I tried using the cloudfoxable profile, but it didn’t exist.
 The correct profile was ctf-starting-user.
-How did I overcome the challenge?
+
+#How did I overcome the challenge?#
 I ran aws configure list-profiles to find available profiles.
 Once I switched to ctf-starting-user, CloudFox worked correctly.
-What led to the breakthrough?
+
+#What led to the breakthrough?#
 Checking the IAM policy helped me realize that I had access to only one parameter.
 Running CloudFox secrets quickly identified the SSM parameter name.
-On the blue team side, how can this learning be used for defense?
+
+#On the blue team side, how can this learning be used for defense?#
 Use IAM conditions to limit access to specific roles or IP addresses.
 Enable logging to monitor access to secrets.
 Rotate secrets regularly to prevent misuse.
