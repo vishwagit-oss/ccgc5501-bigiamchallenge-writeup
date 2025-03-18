@@ -35,7 +35,7 @@ Using **CloudFox**, we need to discover the secret and extract the flag.
 }
 Analysis
 
-# What do I have access to?
+## What do I have access to?
 I can retrieve SSM Parameters (ssm:GetParameter, ssm:GetParameters).
 I can list parameters using ssm:DescribeParameters.
 My access is restricted to only one parameter: /cloudfoxable/flag/its-a-secret.
