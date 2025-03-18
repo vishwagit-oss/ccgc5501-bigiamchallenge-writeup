@@ -1,24 +1,60 @@
 # **CloudFox AWS CTF - "It's A Secret" Challenge Write-up**
 
-## **Challenge Details**
-For this CTF, the starting `ctf-starting-user` has the following policies:
+---
 
-- **SecurityAudit** (AWS Managed)
-- **CloudFox** (Customer Managed)
-- **its-a-secret** (Customer Managed)
+## Challenge Statement
+The goal of this challenge is to retrieve a **flag** stored as an AWS **SSM Parameter**.  
 
-These policies allow the user to:
-- Run **CloudFox** for reconnaissance.
-- Retrieve the secret flag stored in AWS **SSM Parameter Store**.
+We start with an IAM user that has the following policies:  
 
-If the setup was followed correctly, the profile `cloudfoxable` should be tied to the `ctf-starting-user`.
+- **SecurityAudit** (AWS Managed)  
+- **CloudFox** (Customer Managed)  
+- **its-a-secret** (Customer Managed)  
+
+Using **CloudFox**, we need to discover the secret and extract the flag.
 
 ---
 
-## **Step 1: Confirm AWS Identity**
-Verify the AWS profile and check the identity:
+## IAM Policy  
 
-```powershell
+### IAM Policy: `its-a-secret`
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters",
+                "ssm:DescribeParameters"
+            ],
+            "Resource": "arn:aws:ssm:ca-central-1:585008067178:parameter/cloudfoxable/flag/its-a-secret"
+        }
+    ]
+}
+Analysis
+What do I have access to?
+
+I can retrieve SSM Parameters (ssm:GetParameter, ssm:GetParameters).
+I can list parameters using ssm:DescribeParameters.
+My access is restricted to only one parameter: /cloudfoxable/flag/its-a-secret.
+What don’t I have access to?
+
+I cannot access other parameters or Secrets Manager secrets.
+I cannot modify or delete parameters.
+I don’t have full access to AWS SSM Parameter Store.
+What’s interesting?
+
+The policy grants just enough access to retrieve the flag.
+This is an example of least privilege IAM policy design.
+Solution
+Step 1: Confirm AWS Identity
+Verify that the correct profile is in use:
+
+powershell
+Copy
+Edit
 aws --profile ctf-starting-user sts get-caller-identity
 Output:
 
@@ -30,8 +66,8 @@ Edit
     "Account": "585008067178",
     "Arn": "arn:aws:iam::585008067178:user/cloudfoxable-admin"
 }
-Step 2: Run CloudFox to Discover Secrets
-Use CloudFox to enumerate secrets:
+Step 2: Run CloudFox to Enumerate Secrets
+Use CloudFox to list accessible secrets:
 
 powershell
 Copy
@@ -43,22 +79,8 @@ bash
 Copy
 Edit
 │ SSM            │ ca-central-1 │ /cloudfoxable/flag/its-a-secret       │                                  │
-CloudFox also writes output files:
-
-Secrets List:
-C:\Users\vishw\.cloudfox\cloudfox-output\aws\ctf-starting-user-585008067178\table/secrets.txt
-
-Loot File:
-C:\Users\vishw\.cloudfox\cloudfox-output\aws\ctf-starting-user-585008067178\loot\pull-secrets-commands.txt
-
-To view the loot file:
-
-powershell
-Copy
-Edit
-cat "C:\Users\vishw\.cloudfox\cloudfox-output\aws\ctf-starting-user-585008067178\loot\pull-secrets-commands.txt"
-Step 3: Retrieve the Flag
-Use the loot file’s command to retrieve the secret:
+Step 3: Retrieve the Secret
+Use AWS CLI to fetch the flag:
 
 powershell
 Copy
@@ -81,18 +103,28 @@ Edit
     }
 }
 Step 4: Submit the Flag
-Copy the flag:
+Copy and submit the flag:
 
 cpp
 Copy
 Edit
 FLAG{ItsASecret::IsASecretASecretIfTooManyPeopleHaveAccessToIt?}
-
-
-Bonus: Verify Why This User Can Access the Secret
-Run the following command to analyze permissions:
-
-powershell
-Copy
-Edit
-cloudfox aws -p cloudfoxable permissions --principal ctf-starting-user -v2
+Reflection
+What was my approach?
+First, I confirmed my AWS identity.
+Then, I used CloudFox to scan for accessible secrets.
+Finally, I used AWS CLI to retrieve the flag from SSM Parameter Store.
+What was the biggest challenge?
+Initially, I tried using the cloudfoxable profile, but it didn’t exist.
+The correct profile was ctf-starting-user.
+How did I overcome the challenge?
+I ran aws configure list-profiles to find available profiles.
+Once I switched to ctf-starting-user, CloudFox worked correctly.
+What led to the breakthrough?
+Checking the IAM policy helped me realize that I had access to only one parameter.
+Running CloudFox secrets quickly identified the SSM parameter name.
+On the blue team side, how can this learning be used for defense?
+Use IAM conditions to limit access to specific roles or IP addresses.
+Enable logging to monitor access to secrets.
+Rotate secrets regularly to prevent misuse.
+Limit permissions to prevent overexposure of secrets.
