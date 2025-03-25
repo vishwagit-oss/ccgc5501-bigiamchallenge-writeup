@@ -1,70 +1,93 @@
-# CloudFoxable Setup - "It's Another Secret"
 
-## Challenge Overview
+#  CloudFoxable Setup - "It's Another Secret"
 
-In this challenge, I gained access to the role **Ertz**. The main objective was to assume the role and find and access the **its-another-secret** flag. This challenge simulates a scenario where I've just gained access to the role **Ertz** and need to perform a cloud penetration test by assuming roles and exploring permissions.
+## Challenge Statement
 
-## Steps Taken
+The challenge I am working on involves assuming the role **Ertz** to find and access the **its-another-secret** flag. The objective is to simulate gaining access to the **Ertz** role, checking its permissions, and locating the secret.
 
-### Step 1: Assume the Role "Ertz"
+## IAM Policy
 
-The challenge provides two ways to assume the role **Ertz**:
+For this challenge, the IAM policy associated with the **Ertz** role was not explicitly provided. However, based on the challenge, we assume the following:
 
-- **The Hard Way:** Use AWS CLI to manually assume the role:
+- **Role:** Ertz
+- **Permissions:** The permissions granted to the **Ertz** role allow assuming the role and accessing secrets or other cloud resources.
   
-  ```bash
-  aws --profile cloudfoxable sts assume-role --role-arn arn:aws:iam::ACCOUNT_ID:role/Ertz --role-session-name Ertz
-  ```
+### IAM Policy Analysis
 
-  Then, use the output to set up new profiles or environment variables.
+- **What do I have access to?**
+  - I have access to assume the **Ertz** role via AWS CLI using the `sts assume-role` command.
+  - I have access to various AWS services based on the permissions of the **Ertz** role. This likely includes access to secrets, IAM, and other resources that might store the flag.
+  
+- **What don't I have access to?**
+  - I do not have any specific access to resources outside the scope of the **Ertz** role. If the role does not have broad permissions, I might not be able to access other AWS services without further escalation.
+  
+- **What do I find interesting?**
+  - The challenge emphasizes the importance of **role assumption**, which is critical in cloud penetration testing.
+  - The role assumption process allowed me to explore permissions and find the secret flag hidden in the environment.
 
-- **The Easy Way:** Create a new AWS CLI profile that handles the role assumption automatically. I edited the `~/.aws/config` file and added the following configuration:
+## Solution
 
-  ```ini
-  [profile ertz]
-  region = us-west-2
-  role_arn = arn:aws:iam::ACCOUNT_ID:role/Ertz
-  source_profile = cloudfoxable
-  ```
+### Step 1: Assume the Ertz Role
 
-  With this configuration, I can use the **ertz** profile directly in AWS CLI commands.
+To assume the **Ertz** role, I used two possible methods. I chose the easier method of editing the AWS configuration to automatically assume the role.
 
-### Step 2: Verify Role Assumption
+1. Edited the `~/.aws/config` file to add the following configuration:
 
-To confirm that the role assumption was successful, I ran the following command:
+    ```ini
+    [profile ertz]
+    region = us-west-2
+    role_arn = arn:aws:iam::ACCOUNT_ID:role/Ertz
+    source_profile = cloudfoxable
+    ```
 
-```bash
-aws --profile ertz sts get-caller-identity
-```
+2. Verified the role assumption with the command:
 
-The output showed that I was correctly assuming the **Ertz** role:
+    ```bash
+    aws --profile ertz sts get-caller-identity
+    ```
 
-```json
-{
-    "UserId": "AROAQXHJKLZKFYSRACOES:botocore-session-1684201365",
-    "Account": "ACCOUNT_ID",
-    "Arn": "arn:aws:sts::ACCOUNT_ID:assumed-role/Ertz/botocore-session-1684201365"
-}
-```
+    This confirmed that I was assuming the **Ertz** role with the expected session ID and ARN.
 
-### Step 3: Check Permissions for the Ertz Role
+### Step 2: Check Permissions of the Ertz Role
 
-Once I had assumed the **Ertz** role, the next step was to check the permissions granted to the role. This is essential in any cloud penetration test to identify what the assumed user can and cannot do. I inspected the permissions associated with the **Ertz** role.
+I checked the permissions of the **Ertz** role to understand what actions I could take with it. I used the AWS CLI to list the policies attached to the role.
 
-### Step 4: Find the "its-another-secret" Secret
+### Step 3: Find the "its-another-secret" Secret
 
-I navigated through the environment, looking for a secret or flag. After thoroughly searching the accessible resources, I discovered the flag.
+I explored the AWS environment for any secrets related to the **its-another-secret** flag. After searching through the accessible resources, I used AWS Secrets Manager to list and retrieve secrets.
 
-### Step 5: Flag Discovery
+    ```bash
+    aws --profile ertz secretsmanager list-secrets
+    ```
 
-The flag for this challenge was:
+Upon finding the relevant secret, I retrieved the flag:
 
 ```
 FLAG{ItsAnotherSecret::ThereWillBeALotOfAssumingRolesInThisCTF}
 ```
 
-## Conclusion
+### Conclusion
 
-This challenge was a great exercise in assuming AWS roles and exploring permissions. By using a simple profile configuration, I was able to seamlessly assume the **Ertz** role and locate the flag. The challenge emphasized the importance of role assumption in cloud penetration tests and how it can lead to uncovering valuable information.
+By assuming the **Ertz** role and exploring its permissions, I successfully located the flag. This challenge helped me practice role assumption, a critical skill in cloud penetration testing.
 
----
+## Reflection
+
+### What was your approach?
+
+My approach was to first assume the **Ertz** role using the provided instructions, then check the role's permissions to understand what resources I could access. Once I had the role, I searched for the secret that would lead me to the flag.
+
+### What was the biggest challenge?
+
+The biggest challenge was ensuring that I was correctly assuming the **Ertz** role and navigating the permissions effectively to access the correct resources. Role assumption can sometimes be tricky, especially if permissions are restricted.
+
+### How did you overcome the challenges?
+
+I overcame these challenges by following the instructions closely, ensuring I edited the AWS CLI configuration properly to assume the role without issues. Additionally, I made sure to validate my role assumption with the `sts get-caller-identity` command before proceeding.
+
+### What led to the breakthrough?
+
+The breakthrough came when I successfully assumed the **Ertz** role and began exploring its permissions. Once I had access to the role, it was just a matter of searching for the secret in the relevant resources.
+
+### On the blue side, how can the learning be used to properly defend the important assets?
+
+The lessons learned from this challenge can help in defending cloud assets by ensuring that roles are properly configured with the least privilege principle in mind. Regular audits of roles, permissions, and secret management systems like AWS Secrets Manager are crucial for maintaining a secure cloud environment. Additionally, strong role assumption controls and monitoring can help detect and mitigate unauthorized role assumptions.
